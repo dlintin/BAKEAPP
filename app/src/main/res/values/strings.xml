@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="splash_icon_desc">Splash Icon Baking App</string>
+    <string name="recipe_ingredient_plural">%d ingredients</string>
+    <string name="recipe_ingredient_singular">%d ingredients</string>
+    <string name="recipe_step_plural">%d stepses</string>
+    <string name="recipe_step_singular">%d steps</string>
+    <string name="recipe_serving_plural">Serving for %d portions</string>
+    <string name="recipe_serving_singular">Serving for %d portion</string>
+    <string name="main_progress_title">Please Wait</string>
+    <string name="main_error_title">Connection Failed. Please check your connection and try again.</string>
+    <string name="adapter_step_example_title">Example Title</string>
+    <string name="recipes_example_title">Example Title</string>
+    <string name="recipes_example_ingredient">Example Ingredient</string>
+    <string name="adapter_example_step">Example Step</string>
+    <string name="adapter_example_servings">Example Servings</string>
+    <string name="ingredients">Ingredients :</string>
+    <string name="example_ingredient">- Example of an Ingredient</string>
+    <string name="stepses">Steps :</string>
+    <string name="nav_prev_step">Prev Step</string>
+    <string name="nav_next_step">Next Step</string>
+    <string name="main_error_icon_desc">Main Error Icon Wifi Problem</string>
+    <string name="recipe_step_image_desc">Adapter Recipe Step Image</string>
+    <string name="recipes_image_desc">Adapter Recipes Image Default</string>
+    <string name="add_widget">Add widget</string>
+    <string name="splash_author">Dianto Lintin</string>
+    <string name="error_adding_widget">Internet Connection Problem. Please try adding widget later.</string>
+    <string name="widget_ingredients_title">Ingredients of %s</string>
+</resources>

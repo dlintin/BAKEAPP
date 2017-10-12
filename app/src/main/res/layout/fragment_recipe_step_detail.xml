@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/detail_step_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/detail_step_video"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <ImageView
+            android:id="@+id/detail_step_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/darker_gray"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/detail_step_instruction"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/detail_step_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_step_content"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/detail_step_nav_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/nav_prev_step"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/detail_step_nav_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/nav_next_step"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</RelativeLayout>
