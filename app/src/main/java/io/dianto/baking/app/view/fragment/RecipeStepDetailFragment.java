@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
 
     private SimpleExoPlayer mPlayer;
     private Step mStep;
-    private long mPlaybackPosition;
+    private long mPlaybackPosition,POSISI;
     private int mCurrentWindow;
     private boolean mPlayWhenReady;
     private int mNumber;
@@ -77,8 +78,15 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
-
+        super.onCreateView(inflater, container, savedInstanceState);
         initView(rootView);
+
+        if (savedInstanceState != null)
+        {
+            // restore player position
+            mPlaybackPosition = savedInstanceState.getLong("bufferPosition");
+            POSISI = mPlaybackPosition;
+        }
 
         String strStepJson = getArguments().getString(EXTRA_STEP);
         mStep = App.getInstance().getGson().fromJson(strStepJson, Step.class);
@@ -104,6 +112,27 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         return rootView;
     }
 
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        releasePlayer();
+        Log.d("SIMPAN", String.valueOf(mPlaybackPosition));
+        outState.putLong("bufferPosition", mPlaybackPosition);
+
+    }
+
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        releasePlayer();
+    }
+
     private MediaSource buildMediaSource(Uri uri) {
         return new ExtractorMediaSource(uri,
                 new DefaultHttpDataSourceFactory("ua"),
@@ -123,9 +152,10 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                 new DefaultTrackSelector(), new DefaultLoadControl());
 
         mDetailStepVideo.setPlayer(mPlayer);
-
+        Log.d("AMBIL INIT", String.valueOf(mPlaybackPosition));
         mPlayer.setPlayWhenReady(mPlayWhenReady);
-        mPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
+
+
 
         if (TextUtils.isEmpty(mStep.getVideoUrl()) && TextUtils.isEmpty(mStep.getThumbnailUrl())) {
             mDetailStepVideo.setVisibility(View.GONE);
@@ -139,6 +169,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
             }
             MediaSource mediaSource = buildMediaSource(uri);
             mPlayer.prepare(mediaSource, true, false);
+
         }
     }
 
@@ -146,6 +177,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     public void onStart() {
         super.onStart();
 
+            // init player
             initializePlayer();
 
     }
@@ -153,9 +185,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
-        if ((Util.SDK_INT <= 23 || mPlayer == null)) {
             initializePlayer();
-        }
     }
 
     @Override
