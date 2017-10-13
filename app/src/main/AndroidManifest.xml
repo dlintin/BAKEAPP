@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="io.dianto.baking.app.view.activity.Splash_Screen_Activity">
+        <activity android:name="io.dianto.baking.app.view.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,14 +21,14 @@
         </activity>
         <activity android:name="io.dianto.baking.app.view.activity.MainActivity" />
         <activity
-            android:name="io.dianto.baking.app.view.activity.Recipe_Activity"
+            android:name="io.dianto.baking.app.view.activity.RecipeActivity"
             android:parentActivityName="io.dianto.baking.app.view.activity.MainActivity" />
-        <activity android:name="io.dianto.baking.app.view.activity.Baking_Widget_Configuration_Activity">
+        <activity android:name="io.dianto.baking.app.view.activity.BakingWidgetConfigurationActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
-        <receiver android:name="io.dianto.baking.app.BakingApp_Widget">
+        <receiver android:name="io.dianto.baking.app.BakingAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

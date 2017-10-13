@@ -11,18 +11,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.dianto.baking.app.model.Recipe;
+import io.dianto.baking.app.view.callback.SimpleRecipeOnClickListener;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.model.Recipes;
-import io.dianto.baking.app.view.callback.SimpleRecipe_OnClickListener;
-
-
 
 public class SimpleRecipesAdapter extends RecyclerView.Adapter<SimpleRecipesAdapter.SimpleRecipesViewHolder> {
 
-    private SimpleRecipe_OnClickListener mCallback;
-    private List<Recipes> mRecipes;
+    private SimpleRecipeOnClickListener mCallback;
+    private List<Recipe> mRecipes;
 
-    public SimpleRecipesAdapter(SimpleRecipe_OnClickListener callback) {
+    public SimpleRecipesAdapter(SimpleRecipeOnClickListener callback) {
         mRecipes = new ArrayList<>();
         this.mCallback = callback;
     }
@@ -44,13 +42,13 @@ public class SimpleRecipesAdapter extends RecyclerView.Adapter<SimpleRecipesAdap
         return mRecipes.size();
     }
 
-    public void setDataAdapter(List<Recipes> recipes) {
+    public void setDataAdapter(List<Recipe> recipes) {
         mRecipes.clear();
         mRecipes.addAll(recipes);
         notifyDataSetChanged();
     }
 
-    public List<Recipes> getDataAdapter() {
+    public List<Recipe> getDataAdapter() {
         return mRecipes;
     }
 

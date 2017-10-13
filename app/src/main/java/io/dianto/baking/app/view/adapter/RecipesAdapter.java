@@ -9,22 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.dianto.baking.app.model.Recipe;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.model.Recipes;
-import io.dianto.baking.app.view.callback.Recipe_OnClickListener;
+import io.dianto.baking.app.view.callback.RecipeOnClickListener;
 
 import static io.dianto.baking.app.util.Constant.Function.setImageResource;
 
-
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
-    private List<Recipes> mRecipes;
-    private Recipe_OnClickListener mCallback;
+    private List<Recipe> mRecipes;
+    private RecipeOnClickListener mCallback;
 
-    public RecipesAdapter(Recipe_OnClickListener callback) {
+    public RecipesAdapter(RecipeOnClickListener callback) {
         mRecipes = new ArrayList<>();
         mCallback = callback;
     }
@@ -37,29 +38,29 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
-        Recipes recipes = mRecipes.get(holder.getAdapterPosition());
+        Recipe recipe = mRecipes.get(holder.getAdapterPosition());
         Context context = holder.itemView.getContext();
 
-        holder.recipeTitle.setText(recipes.getName());
+        holder.recipeTitle.setText(recipe.getName());
 
-        if (recipes.getIngredientses().size() == 1) {
-            holder.recipeIngredient.setText(context.getString(R.string.recipe_ingredient_singular, recipes.getIngredientses().size()));
+        if (recipe.getIngredients().size() == 1) {
+            holder.recipeIngredient.setText(context.getString(R.string.recipe_ingredient_singular, recipe.getIngredients().size()));
         } else {
-            holder.recipeIngredient.setText(context.getString(R.string.recipe_ingredient_plural, recipes.getIngredientses().size()));
+            holder.recipeIngredient.setText(context.getString(R.string.recipe_ingredient_plural, recipe.getIngredients().size()));
         }
-        if (recipes.getStepses().size() == 1) {
-            holder.recipeStep.setText(context.getString(R.string.recipe_step_singular, recipes.getStepses().size()));
+        if (recipe.getSteps().size() == 1) {
+            holder.recipeStep.setText(context.getString(R.string.recipe_step_singular, recipe.getSteps().size()));
         } else {
-            holder.recipeStep.setText(context.getString(R.string.recipe_step_plural, recipes.getStepses().size()));
+            holder.recipeStep.setText(context.getString(R.string.recipe_step_plural, recipe.getSteps().size()));
         }
-        if (recipes.getServings() == 1) {
-            holder.recipeServing.setText(context.getString(R.string.recipe_serving_singular, recipes.getServings()));
+        if (recipe.getServings() == 1) {
+            holder.recipeServing.setText(context.getString(R.string.recipe_serving_singular, recipe.getServings()));
         } else {
-            holder.recipeServing.setText(context.getString(R.string.recipe_serving_plural, recipes.getServings()));
+            holder.recipeServing.setText(context.getString(R.string.recipe_serving_plural, recipe.getServings()));
         }
 
-        if (!TextUtils.isEmpty(recipes.getImage())) {
-            setImageResource(context, recipes.getImage(), holder.recipeImage);
+        if (!TextUtils.isEmpty(recipe.getImage())) {
+            setImageResource(context, recipe.getImage(), holder.recipeImage);
         }
     }
 
@@ -68,13 +69,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         return mRecipes.size();
     }
 
-    public void setDataAdapter(List<Recipes> recipes) {
+    public void setDataAdapter(List<Recipe> recipes) {
         mRecipes.clear();
         mRecipes.addAll(recipes);
         notifyDataSetChanged();
     }
 
-    public List<Recipes> getDataAdapter() {
+    public List<Recipe> getDataAdapter() {
         return mRecipes;
     }
 
@@ -110,7 +111,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         }
     }
 
-    private void showDetail(Recipes recipes) {
-        mCallback.onRecipeSelected(recipes);
+    private void showDetail(Recipe recipe) {
+        mCallback.onRecipeSelected(recipe);
     }
 }

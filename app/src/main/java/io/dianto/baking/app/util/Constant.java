@@ -11,7 +11,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import io.dianto.baking.app.R;
 
-
 public class Constant {
     public static class Data {
         public static final String REMAINING_TIME_KEY = "splash_time";

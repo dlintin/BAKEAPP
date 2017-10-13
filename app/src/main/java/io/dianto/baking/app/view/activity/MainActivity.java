@@ -11,19 +11,23 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.widget.RelativeLayout;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.dianto.baking.app.App;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.controller.Recipe_Controller;
-import io.dianto.baking.app.events.Recipe_Event;
-import io.dianto.baking.app.model.Recipes;
+import io.dianto.baking.app.controller.RecipeController;
+import io.dianto.baking.app.event.RecipeEvent;
+import io.dianto.baking.app.model.Recipe;
 import io.dianto.baking.app.view.adapter.RecipesAdapter;
-import io.dianto.baking.app.view.callback.Recipe_OnClickListener;
+import io.dianto.baking.app.view.callback.RecipeOnClickListener;
+
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_RECIPE;
 import static io.dianto.baking.app.util.Constant.Data.LIST_DATA;
 import static io.dianto.baking.app.util.Constant.Data.LIST_NEED_LOADING;
@@ -31,7 +35,7 @@ import static io.dianto.baking.app.util.Constant.Data.LIST_STATE;
 import static io.dianto.baking.app.util.Constant.Data.MAIN_COLUMN_WIDTH_DEFAULT;
 import static io.dianto.baking.app.util.Constant.Function.nextActivity;
 
-public class MainActivity extends AppCompatActivity implements Recipe_OnClickListener {
+public class MainActivity extends AppCompatActivity implements RecipeOnClickListener {
     @BindView(R.id.main_recipes_refresh)
     SwipeRefreshLayout mMainRecipesRefresh;
 
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Recipe_OnClickLis
 
         if (savedInstanceState != null) {
             mRvRecipes.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE));
-            mRecipeAdapter.setDataAdapter(Arrays.asList(App.getInstance().getGson().fromJson(savedInstanceState.getString(LIST_DATA), Recipes[].class)));
+            mRecipeAdapter.setDataAdapter(Arrays.asList(App.getInstance().getGson().fromJson(savedInstanceState.getString(LIST_DATA), Recipe[].class)));
             mNeedReload = savedInstanceState.getBoolean(LIST_NEED_LOADING);
         }
 
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements Recipe_OnClickLis
         mErrorLayout.setVisibility(View.GONE);
         mProgressLayout.setVisibility(View.VISIBLE);
 
-        Recipe_Controller controller = new Recipe_Controller();
+        RecipeController controller = new RecipeController();
         controller.getRecipes();
     }
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements Recipe_OnClickLis
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getRecipes(Recipe_Event event) {
+    public void getRecipes(RecipeEvent event) {
         mProgressLayout.setVisibility(View.GONE);
         if (event.isSuccess()) {
             mRecipeAdapter.setDataAdapter(event.getRecipes());
@@ -143,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements Recipe_OnClickLis
     }
 
     @Override
-    public void onRecipeSelected(Recipes recipes) {
+    public void onRecipeSelected(Recipe recipe) {
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_RECIPE, App.getInstance().getGson().toJson(recipes));
+        bundle.putString(EXTRA_RECIPE, App.getInstance().getGson().toJson(recipe));
 
-        nextActivity(this, Recipe_Activity.class, bundle, false);
+        nextActivity(this, RecipeActivity.class, bundle, false);
     }
 }

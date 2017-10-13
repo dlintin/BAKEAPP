@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.allOf;
 public class BakingAppTest {
 
     @Rule
-    public ActivityTestRule<Splash_Screen_Activity> mActivityTestRule = new ActivityTestRule<>(Splash_Screen_Activity.class);
+    public ActivityTestRule<SplashActivity> mActivityTestRule = new ActivityTestRule<>(SplashActivity.class);
 
     @Test
     public void bakingAppTest() {

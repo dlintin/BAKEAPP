@@ -1,6 +1,5 @@
 package io.dianto.baking.app.view.callback;
 
-
-public interface RecipeStep_OnClickListener {
+public interface RecipeStepOnClickListener {
     void onStepSelected(int selectedPosition);
 }

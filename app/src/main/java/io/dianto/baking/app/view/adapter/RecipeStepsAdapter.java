@@ -14,18 +14,18 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.dianto.baking.app.model.Step;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.model.Steps;
-import io.dianto.baking.app.view.callback.RecipeStep_OnClickListener;
+import io.dianto.baking.app.view.callback.RecipeStepOnClickListener;
 
 public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.RecipeStepsViewHolder> {
 
     private static int clickedPosition;
-    private List<Steps> mStepses;
-    private RecipeStep_OnClickListener mCallback;
+    private List<Step> mSteps;
+    private RecipeStepOnClickListener mCallback;
 
-    public RecipeStepsAdapter(RecipeStep_OnClickListener callback) {
-        this.mStepses = new ArrayList<>();
+    public RecipeStepsAdapter(RecipeStepOnClickListener callback) {
+        this.mSteps = new ArrayList<>();
         this.mCallback = callback;
         clickedPosition = -1;
     }
@@ -38,7 +38,7 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     @Override
     public void onBindViewHolder(RecipeStepsViewHolder holder, int position) {
-        holder.recipeStepTitle.setText(mStepses.get(holder.getAdapterPosition()).getShortDescription());
+        holder.recipeStepTitle.setText(mSteps.get(holder.getAdapterPosition()).getShortDescription());
 
         final Context context = holder.itemView.getContext();
         if (clickedPosition == position) {
@@ -50,12 +50,12 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     @Override
     public int getItemCount() {
-        return mStepses.size();
+        return mSteps.size();
     }
 
-    public void setDataAdapter(List<Steps> stepses) {
-        mStepses.clear();
-        mStepses.addAll(stepses);
+    public void setDataAdapter(List<Step> steps) {
+        mSteps.clear();
+        mSteps.addAll(steps);
         notifyDataSetChanged();
     }
 

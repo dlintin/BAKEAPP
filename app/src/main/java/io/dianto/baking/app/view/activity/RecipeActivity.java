@@ -7,19 +7,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
+
 import butterknife.ButterKnife;
+import io.dianto.baking.app.event.RecipeStepEvent;
+import io.dianto.baking.app.model.Ingredient;
+import io.dianto.baking.app.model.Recipe;
+import io.dianto.baking.app.model.Step;
+import io.dianto.baking.app.view.fragment.RecipeDetailFragment;
 import io.dianto.baking.app.App;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.events.Recipe_Step_Event;
-import io.dianto.baking.app.model.Ingredients;
-import io.dianto.baking.app.model.Recipes;
-import io.dianto.baking.app.model.Steps;
-import io.dianto.baking.app.view.fragment.RecipeDetailFragment;
 import io.dianto.baking.app.view.fragment.RecipeStepDetailFragment;
+
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_INGREDIENTS;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_IS_RECIPE_MENU;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_RECIPE;
@@ -30,13 +34,13 @@ import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_LAST;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_NUMBER;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_POSITION;
 
-public class Recipe_Activity extends AppCompatActivity {
-    private Recipes mDetailRecipes;
+public class RecipeActivity extends AppCompatActivity {
+    private Recipe mDetailRecipe;
     private FragmentManager fragmentManager;
     private boolean mIsRecipeMenu = false;
     private EventBus eventBus;
-    private List<Ingredients> mRecipeIngredientses;
-    private List<Steps> mRecipeStepses;
+    private List<Ingredient> mRecipeIngredients;
+    private List<Step> mRecipeSteps;
     private int mSelectedPosition = -1;
     private boolean isTwoPanel;
 
@@ -47,9 +51,9 @@ public class Recipe_Activity extends AppCompatActivity {
 
         eventBus = App.getInstance().getEventBus();
 
-        mDetailRecipes = App.getInstance().getGson().fromJson(this.getIntent().getExtras().getString(EXTRA_RECIPE), Recipes.class);
-        mRecipeIngredientses = mDetailRecipes.getIngredientses();
-        mRecipeStepses = mDetailRecipes.getStepses();
+        mDetailRecipe = App.getInstance().getGson().fromJson(this.getIntent().getExtras().getString(EXTRA_RECIPE), Recipe.class);
+        mRecipeIngredients = mDetailRecipe.getIngredients();
+        mRecipeSteps = mDetailRecipe.getSteps();
 
         initView();
 
@@ -72,12 +76,12 @@ public class Recipe_Activity extends AppCompatActivity {
     }
 
     private void showRecipeMenu() {
-        setTitle(mDetailRecipes.getName());
+        setTitle(mDetailRecipe.getName());
 
         RecipeDetailFragment fragment = new RecipeDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_INGREDIENTS, App.getInstance().getGson().toJson(mRecipeIngredientses));
-        bundle.putString(EXTRA_STEPS, App.getInstance().getGson().toJson(mRecipeStepses));
+        bundle.putString(EXTRA_INGREDIENTS, App.getInstance().getGson().toJson(mRecipeIngredients));
+        bundle.putString(EXTRA_STEPS, App.getInstance().getGson().toJson(mRecipeSteps));
         fragment.setArguments(bundle);
 
         if (isTwoPanel)
@@ -115,7 +119,7 @@ public class Recipe_Activity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showRecipeStep(Recipe_Step_Event event) {
+    public void showRecipeStep(RecipeStepEvent event) {
         if (mSelectedPosition != event.getSelectedPosition()) {
             mSelectedPosition = event.getSelectedPosition();
             showRecipeStepFragment(mSelectedPosition);
@@ -123,15 +127,15 @@ public class Recipe_Activity extends AppCompatActivity {
     }
 
     private void showRecipeStepFragment(int stepNumber) {
-        Steps steps = mRecipeStepses.get(stepNumber);
-        setTitle(mDetailRecipes.getName() + " - " + steps.getShortDescription());
+        Step step = mRecipeSteps.get(stepNumber);
+        setTitle(mDetailRecipe.getName() + " - " + step.getShortDescription());
 
         RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_STEP, App.getInstance().getGson().toJson(steps));
+        bundle.putString(EXTRA_STEP, App.getInstance().getGson().toJson(step));
         bundle.putInt(EXTRA_STEP_NUMBER, stepNumber);
         bundle.putBoolean(EXTRA_STEP_FIRST, stepNumber == 0);
-        bundle.putBoolean(EXTRA_STEP_LAST, stepNumber == (mRecipeStepses.size() - 1));
+        bundle.putBoolean(EXTRA_STEP_LAST, stepNumber == (mRecipeSteps.size() - 1));
         fragment.setArguments(bundle);
         fragmentManager.beginTransaction().replace(R.id.recipe_fragment, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
         mIsRecipeMenu = false;

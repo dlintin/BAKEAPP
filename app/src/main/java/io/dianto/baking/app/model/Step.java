@@ -2,7 +2,8 @@ package io.dianto.baking.app.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Steps {
+
+public class Step {
     @SerializedName("id")
     private int id;
     @SerializedName("shortDescription")

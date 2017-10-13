@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="io.dianto.baking.app.view.activity.Baking_Widget_Configuration_Activity"
+    android:configure="io.dianto.baking.app.view.activity.BakingWidgetConfigurationActivity"
     android:initialLayout="@layout/widget_ingredient_layout"
     android:minHeight="120dp"
     android:minWidth="120dp"

@@ -3,7 +3,7 @@ package io.dianto.baking.app.model;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Ingredients {
+public class Ingredient {
     @SerializedName("quantity")
     private double quantity;
     @SerializedName("measure")

@@ -26,18 +26,22 @@ import com.google.android.exoplayer2.util.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.dianto.baking.app.model.Recipe;
+import io.dianto.baking.app.model.Step;
 import io.dianto.baking.app.App;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.events.Recipe_Step_Event;
-import io.dianto.baking.app.model.Steps;
+import io.dianto.baking.app.event.RecipeStepEvent;
 import io.dianto.baking.app.util.Constant;
 
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_FIRST;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_LAST;
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_STEP_NUMBER;
+
 
 public class RecipeStepDetailFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.detail_step_instruction)
@@ -56,7 +60,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     ImageView mDetailStepImage;
 
     private SimpleExoPlayer mPlayer;
-    private Steps mSteps;
+    private Step mStep;
     private long mPlaybackPosition;
     private int mCurrentWindow;
     private boolean mPlayWhenReady;
@@ -70,24 +74,25 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
 
         initView(rootView);
 
         String strStepJson = getArguments().getString(EXTRA_STEP);
-        mSteps = App.getInstance().getGson().fromJson(strStepJson, Steps.class);
+        mStep = App.getInstance().getGson().fromJson(strStepJson, Step.class);
         mNumber = getArguments().getInt(EXTRA_STEP_NUMBER);
         mFirst = getArguments().getBoolean(EXTRA_STEP_FIRST);
         mLast = getArguments().getBoolean(EXTRA_STEP_LAST);
 
-        mDetailStepInstruction.setText(mSteps.getDescription());
+        mDetailStepInstruction.setText(mStep.getDescription());
 
         mDetailStepImage.setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(mSteps.getThumbnailUrl()) && !mSteps.getThumbnailUrl().substring(mSteps.getThumbnailUrl().length() - 4, mSteps.getThumbnailUrl().length()).equals(".mp4")) {
+        if (!TextUtils.isEmpty(mStep.getThumbnailUrl()) && !mStep.getThumbnailUrl().substring(mStep.getThumbnailUrl().length() - 4, mStep.getThumbnailUrl().length()).equals(".mp4")) {
             mDetailStepImage.setVisibility(View.VISIBLE);
-            Constant.Function.setImageResource(getContext(), mSteps.getThumbnailUrl(), mDetailStepImage);
+            Constant.Function.setImageResource(getContext(), mStep.getThumbnailUrl(), mDetailStepImage);
         }
 
         mDetailStepPrev.setVisibility(View.VISIBLE);
@@ -122,15 +127,15 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         mPlayer.setPlayWhenReady(mPlayWhenReady);
         mPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
 
-        if (TextUtils.isEmpty(mSteps.getVideoUrl()) && TextUtils.isEmpty(mSteps.getThumbnailUrl())) {
+        if (TextUtils.isEmpty(mStep.getVideoUrl()) && TextUtils.isEmpty(mStep.getThumbnailUrl())) {
             mDetailStepVideo.setVisibility(View.GONE);
         } else {
             mDetailStepVideo.setVisibility(View.VISIBLE);
             Uri uri = null;
-            if (!TextUtils.isEmpty(mSteps.getVideoUrl())) {
-                uri = Uri.parse(mSteps.getVideoUrl());
-            } else if (!TextUtils.isEmpty(mSteps.getThumbnailUrl()) && mSteps.getThumbnailUrl().substring(mSteps.getThumbnailUrl().length() - 4, mSteps.getThumbnailUrl().length()).equals(".mp4")) {
-                uri = Uri.parse(mSteps.getThumbnailUrl());
+            if (!TextUtils.isEmpty(mStep.getVideoUrl())) {
+                uri = Uri.parse(mStep.getVideoUrl());
+            } else if (!TextUtils.isEmpty(mStep.getThumbnailUrl()) && mStep.getThumbnailUrl().substring(mStep.getThumbnailUrl().length() - 4, mStep.getThumbnailUrl().length()).equals(".mp4")) {
+                uri = Uri.parse(mStep.getThumbnailUrl());
             }
             MediaSource mediaSource = buildMediaSource(uri);
             mPlayer.prepare(mediaSource, true, false);
@@ -140,9 +145,9 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-        if (Util.SDK_INT > 23) {
+
             initializePlayer();
-        }
+
     }
 
     @Override
@@ -156,17 +161,17 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23) {
+
             releasePlayer();
-        }
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23) {
+
             releasePlayer();
-        }
+
     }
 
     private void releasePlayer() {
@@ -195,14 +200,14 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
 
     private void previousStep() {
         EventBus eventBus = App.getInstance().getEventBus();
-        Recipe_Step_Event event = new Recipe_Step_Event();
+        RecipeStepEvent event = new RecipeStepEvent();
         event.setSelectedPosition(mNumber - 1);
         eventBus.post(event);
     }
 
     private void nextStep() {
         EventBus eventBus = App.getInstance().getEventBus();
-        Recipe_Step_Event event = new Recipe_Step_Event();
+        RecipeStepEvent event = new RecipeStepEvent();
         event.setSelectedPosition(mNumber + 1);
         eventBus.post(event);
     }

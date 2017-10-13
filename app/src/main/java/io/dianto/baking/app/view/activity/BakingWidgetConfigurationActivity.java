@@ -20,22 +20,21 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.dianto.baking.app.controller.RecipeController;
+import io.dianto.baking.app.model.Ingredient;
+import io.dianto.baking.app.model.Recipe;
 import io.dianto.baking.app.App;
 import io.dianto.baking.app.R;
-import io.dianto.baking.app.controller.Recipe_Controller;
-import io.dianto.baking.app.events.Recipe_Event;
-import io.dianto.baking.app.model.Ingredients;
-import io.dianto.baking.app.model.Recipes;
+import io.dianto.baking.app.event.RecipeEvent;
 import io.dianto.baking.app.view.adapter.SimpleRecipesAdapter;
-import io.dianto.baking.app.view.callback.SimpleRecipe_OnClickListener;
+import io.dianto.baking.app.view.callback.SimpleRecipeOnClickListener;
 
 import static io.dianto.baking.app.util.Constant.Data.EXTRA_RECIPE;
 import static io.dianto.baking.app.util.Constant.Data.LIST_DATA;
 import static io.dianto.baking.app.util.Constant.Data.LIST_STATE;
 import static io.dianto.baking.app.util.Constant.Data.WIDGET_ID;
 
-
-public class Baking_Widget_Configuration_Activity extends AppCompatActivity implements SimpleRecipe_OnClickListener {
+public class BakingWidgetConfigurationActivity extends AppCompatActivity implements SimpleRecipeOnClickListener {
     @BindView(R.id.baking_recipe_list)
     RecyclerView mBakingRecipeList;
     private SimpleRecipesAdapter mAdapter;
@@ -60,7 +59,7 @@ public class Baking_Widget_Configuration_Activity extends AppCompatActivity impl
 
         if (savedInstanceState != null) {
             mBakingRecipeList.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE));
-            mAdapter.setDataAdapter(Arrays.asList(App.getInstance().getGson().fromJson(savedInstanceState.getString(LIST_DATA), Recipes[].class)));
+            mAdapter.setDataAdapter(Arrays.asList(App.getInstance().getGson().fromJson(savedInstanceState.getString(LIST_DATA), Recipe[].class)));
             mAppWidgetId = savedInstanceState.getInt(WIDGET_ID);
             return;
         }
@@ -73,7 +72,7 @@ public class Baking_Widget_Configuration_Activity extends AppCompatActivity impl
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        Recipe_Controller controller = new Recipe_Controller();
+        RecipeController controller = new RecipeController();
         controller.getRecipes();
     }
 
@@ -82,14 +81,14 @@ public class Baking_Widget_Configuration_Activity extends AppCompatActivity impl
     }
 
     @Override
-    public void onRecipeSelected(Recipes recipes) {
-        putRecipeToWidget(recipes);
+    public void onRecipeSelected(Recipe recipe) {
+        putRecipeToWidget(recipe);
     }
 
-    private void putRecipeToWidget(Recipes recipes) {
-        Intent intent = new Intent(this, Recipe_Activity.class);
+    private void putRecipeToWidget(Recipe recipe) {
+        Intent intent = new Intent(this, RecipeActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_RECIPE, App.getInstance().getGson().toJson(recipes));
+        bundle.putString(EXTRA_RECIPE, App.getInstance().getGson().toJson(recipe));
         intent.putExtras(bundle);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
@@ -99,14 +98,14 @@ public class Baking_Widget_Configuration_Activity extends AppCompatActivity impl
 
         RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_ingredient_layout);
 
-        views.setTextViewText(R.id.widget_ingredients_title, getString(R.string.widget_ingredients_title, recipes.getName()));
+        views.setTextViewText(R.id.widget_ingredients_title, getString(R.string.widget_ingredients_title, recipe.getName()));
 
         String strIngredient = "";
-        for (Ingredients ingredients : recipes.getIngredientses()) {
+        for (Ingredient ingredient : recipe.getIngredients()) {
             DecimalFormat format = new DecimalFormat("#.##");
 
-            strIngredient += "- " + format.format(ingredients.getQuantity())
-                    + " " + ingredients.getMeasure() + " of " + ingredients.getIngredient() + ".";
+            strIngredient += "- " + format.format(ingredient.getQuantity())
+                    + " " + ingredient.getMeasure() + " of " + ingredient.getIngredient() + ".";
             strIngredient += "\n";
         }
 
@@ -135,7 +134,7 @@ public class Baking_Widget_Configuration_Activity extends AppCompatActivity impl
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getRecipes(Recipe_Event event) {
+    public void getRecipes(RecipeEvent event) {
         if (event.isSuccess()) {
             mAdapter.setDataAdapter(event.getRecipes());
         } else {

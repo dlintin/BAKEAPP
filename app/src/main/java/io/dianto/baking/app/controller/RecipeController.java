@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.dianto.baking.app.App;
-import io.dianto.baking.app.events.Recipe_Event;
-import io.dianto.baking.app.model.Recipes;
+import io.dianto.baking.app.event.RecipeEvent;
+import io.dianto.baking.app.model.Recipe;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -18,9 +18,9 @@ import okhttp3.Response;
 import static io.dianto.baking.app.util.Constant.Data.BAKING_APP_URL;
 
 
-public class Recipe_Controller {
+public class RecipeController {
     private EventBus eventBus = App.getInstance().getEventBus();
-    private Recipe_Event event = new Recipe_Event();
+    private RecipeEvent event = new RecipeEvent();
 
     public void getRecipes() {
         OkHttpClient client = new OkHttpClient();
@@ -29,7 +29,7 @@ public class Recipe_Controller {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String jsonResponse = response.body().string();
-                List<Recipes> recipes = Arrays.asList(App.getInstance().getGson().fromJson(jsonResponse, Recipes[].class));
+                List<Recipe> recipes = Arrays.asList(App.getInstance().getGson().fromJson(jsonResponse, Recipe[].class));
                 event.setMessage(response.message());
                 event.setRecipes(recipes);
                 if (response.code() == 200) {

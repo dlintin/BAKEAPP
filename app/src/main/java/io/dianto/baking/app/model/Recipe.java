@@ -4,17 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-
-
-public class Recipes {
+public class Recipe {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
     private String name;
-    @SerializedName("ingredientses")
-    private List<Ingredients> ingredientses;
-    @SerializedName("stepses")
-    private List<Steps> stepses;
+    @SerializedName("ingredients")
+    private List<Ingredient> ingredients;
+    @SerializedName("steps")
+    private List<Step> steps;
     @SerializedName("servings")
     private int servings;
     @SerializedName("image")
@@ -28,12 +26,12 @@ public class Recipes {
         return name;
     }
 
-    public List<Ingredients> getIngredientses() {
-        return ingredientses;
+    public List<Ingredient> getIngredients() {
+        return ingredients;
     }
 
-    public List<Steps> getStepses() {
-        return stepses;
+    public List<Step> getSteps() {
+        return steps;
     }
 
     public int getServings() {
